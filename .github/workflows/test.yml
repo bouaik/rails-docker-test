@@ -4,67 +4,49 @@ on: [push, pull_request]
 
 jobs:
   rspec:
-   runs-on: ubuntu-latest
-    container:
-      image: ruby:2.7
-
+  name: Tests
+    runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres
+        image: postgres:11
         env:
-          POSTGRES_USER: postgres
+          POSTGRES_USER: myapp
+          POSTGRES_DB: myapp_test
           POSTGRES_PASSWORD: ""
-          POSTGRES_DB: postgres
-        ports:
-        - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        ports: ["5432:5432"]
 
     steps:
-    - uses: actions/checkout@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - uses: actions/setup-node@v1
-      with:
-        node-version: '10.x'
-        registry-url: 'https://registry.npmjs.org'
+      - name: Setup Ruby and install gems
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
 
-    - name: Gem cache
-      id: cache-bundle
-      uses: actions/cache@v1
-      with:
-        path: vendor/bundle
-        key: bundle-${{ hashFiles('**/Gemfile.lock') }}
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.13.0
+      - name: Find yarn cache location
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: JS package cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install packages
+        run: |
+          yarn install --pure-lockfile
 
-    - name: Bundle install
-      env:
-        RAILS_ENV: test
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3 --path vendor/bundle
-    - name: Install yarn
-      run: npm install -g yarn
-
-    # NOTE: Yarn cache doesn't seem to be working quite yet
-    - name: Get yarn cache dir
-      id: yarn-cache-dir
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-
-    - name: Yarn cache
-      id: cache-yarn
-      uses: actions/cache@v1
-      with:
-        path: ${{ steps.yarn-cache-dir.outputs.dir }}
-        key: yarn-${{ hashFiles('**/yarn.lock') }}
-
-    - name: Yarn install
-      run: yarn install
-
-    - name: Setup DB, Run tests
-      env:
-        PGHOST: postgres
-        PGUSER: postgres
-        PGPORT: ${{ job.services.postgres.ports[5432] }}
-        RAILS_ENV: test
+      - name: Setup test database
+        env:
+          RAILS_ENV: test
+          PGHOST: localhost
+          PGUSER: myapp
       run: |
         bin/rails db:create db:schema:load
         bundle exec rspec
