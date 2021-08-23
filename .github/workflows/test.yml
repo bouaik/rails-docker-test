@@ -42,10 +42,6 @@ jobs:
           yarn install --pure-lockfile
 
       - name: Setup test database
-        # env:
-        #   RAILS_ENV: test
-        #   PGHOST: db
-        #   PGUSER: postgres
         run: |
           bin/rails db:create db:schema:load
           bundle exec rspec
