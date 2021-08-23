@@ -47,5 +47,5 @@ jobs:
           PGHOST: localhost
           PGUSER: postgres
         run: |
-          bin/rails db:create db:schema:load
+          bin/rails db:drop db:create db:schema:load
           bundle exec rspec
