@@ -10,7 +10,11 @@
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
+  <body style="margin: 0">
+    <% if request.original_url.split("https://")[1].split(".")[0] == "thawing-earth-00760" %>
+      <h2 style="color:blue; background-color:yellow; text-align:center; padding: 20px">Préproduction</h2>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>
