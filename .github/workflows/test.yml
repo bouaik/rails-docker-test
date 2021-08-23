@@ -46,6 +46,6 @@ jobs:
           RAILS_ENV: test
           PGHOST: db
           PGUSER: postgres
-      run: |
-        bin/rails db:create db:schema:load
-        bundle exec rspec
+        run: |
+          bin/rails db:create db:schema:load
+          bundle exec rspec
