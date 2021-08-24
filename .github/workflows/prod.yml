@@ -1,8 +1,9 @@
-name: Deploy to preproduction.
+name: Deploy to production.
 
 on:
-  push:
-    branches: [developement]
+  release:
+    types:
+      - created
 
 jobs:
   build:
@@ -15,10 +16,11 @@ jobs:
         with:
           email: bouaik.lhou@gmail.com
           heroku_api_key: 486e4f4b-acf2-49cd-b02e-72b9b80cacab
-          heroku_app_name: thawing-earth-00760
+          heroku_app_name: secret-earth-08375
           dockerfile_directory: ./
           dockerfile_name: Dockerfile
           docker_options: "--no-cache"
           process_type: web
           
    
+          
