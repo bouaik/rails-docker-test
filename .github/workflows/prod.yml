@@ -1,0 +1,26 @@
+name: Deploy to production.
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
+        uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
+        with:
+          email: bouaik.lhou@gmail.com
+          heroku_api_key: 486e4f4b-acf2-49cd-b02e-72b9b80cacab
+          heroku_app_name: secret-earth-08375
+          dockerfile_directory: ./
+          dockerfile_name: Dockerfile
+          docker_options: "--no-cache"
+          process_type: web
+          
+   
+          
