@@ -2,8 +2,8 @@
 
 ## Instalation
 
-clone
-run 
+- clone the repo
+- cd and run 
 ```
 docker-compose up --build
 ```
