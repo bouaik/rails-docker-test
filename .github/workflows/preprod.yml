@@ -13,8 +13,8 @@ jobs:
       - name: Build, Push and Release a Docker container to Heroku. # Your custom step name
         uses: gonuit/heroku-docker-deploy@v1.3.3 # GitHub action name (leave it as it is).
         with:
-          email: bouaik.lhou@gmail.com
-          heroku_api_key: 486e4f4b-acf2-49cd-b02e-72b9b80cacab
+          email: ${{ secrets.SECRET_EMAIL }}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: thawing-earth-00760
           dockerfile_directory: ./
           dockerfile_name: Dockerfile
