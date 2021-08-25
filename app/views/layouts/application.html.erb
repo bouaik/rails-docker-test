@@ -11,10 +11,13 @@
   </head>
 
   <body style="margin: 0">
-    <%# if !(Rails.env == "test") && request.original_url.split("https://")[1].split(".")[0] == "thawing-earth-00760" %>
+    <% if Rails.env == "development" %>
+      <h2 style="color:blue; background-color:yellow; text-align:center; padding: 20px">Developement</h2>
+    <% elsif Rails.env == "production" && request.original_url.split("https://")[1].split(".")[0] == "thawing-earth-00760" %>
       <h2 style="color:blue; background-color:yellow; text-align:center; padding: 20px">Préproduction</h2>
-    <%# end %>
+    <% end %>
 
     <%= yield %>
   </body>
 </html>
+
